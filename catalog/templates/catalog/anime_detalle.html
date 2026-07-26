@@ -40,7 +40,7 @@
             <h2 class="text-3xl font-bold border-b-2 border-purple-500 pb-2 mb-6">Lista de Episodios</h2>
             {% if episodios %}
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {% for ep  in anime.episodios.all %}
+                    {% for ep in episodios %}
                         <a href="{% url 'ver_episodio' ep.id %}" class="bg-gray-800 hover:bg-purple-900 border border-gray-700 hover:border-purple-500 p-4 rounded-xl flex items-center justify-between transition group shadow-md">
                             <div>
                                 <span class="text-pink-500 font-bold text-sm">Episodio {{ ep.numero }}</span>
