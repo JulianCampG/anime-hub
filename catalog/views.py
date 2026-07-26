@@ -1,33 +1,59 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, render
-
-# Importa tus modelos (asegúrate de que coincidan con los nombres reales de tus modelos)
-from .models import Anime, Capitulo
+from django.shortcuts import get_object_or_404, redirect, render
+from .models import Anime, Episodio
 
 
 @login_required
 def home(request):
     """Vista principal o catálogo de animes (Protegida)"""
     animes = Anime.objects.all()
-    # Si manejas vistos recientemente o favoritos, inclúyelos aquí en el contexto
-    return render(request, 'catalog/home.html', {'animes': animes})
+    return render(request, "catalog/home.html", {"animes": animes})
 
 
 @login_required
 def anime_detalle(request, anime_id):
-    """Vista de detalles del anime seleccionado (Protegida)"""
+    """Vista de detalles y lista de episodios de un anime"""
     anime = get_object_or_404(Anime, id=anime_id)
-    return render(request, 'catalog/anime_detalle.html', {'anime': anime})
+    return render(request, "catalog/anime_detalle.html", {"anime": anime})
 
 
 @login_required
-def ver_capitulo(request, capitulo_id):
-    """Vista del reproductor de episodios (Protegida contra accesos directos sin sesión)"""
-    capitulo = get_object_or_404(Capitulo, id=capitulo_id)
-    return render(request, 'catalog/ver_episodio.html', {'capitulo': capitulo})
+def ver_episodio(request, episodio_id):
+    """Vista para reproducir el episodio seleccionado"""
+    episodio = get_object_or_404(Episodio, id=episodio_id)
+    return render(request, "catalog/ver_episodio.html", {"episodio": episodio})
 
 
 @login_required
-def perfil_usuario(request):
-    """Vista del perfil de usuario (Protegida)"""
-    return render(request, 'catalog/perfil.html')
+def perfil(request):
+    """Vista del perfil de usuario con sus favoritos y vistos"""
+    return render(request, "catalog/perfil.html")
+
+
+@login_required
+def registro(request):
+    """Vista de registro (puedes ajustarla según tu formulario de registro)"""
+    # Si usas un formulario de registro personalizado, colócalo aquí
+    return render(request, "catalog/registro.html")
+
+
+@login_required
+def toggle_favorito(request, anime_id):
+    """Agregar o quitar de favoritos"""
+    anime = get_object_or_404(Anime, id=anime_id)
+    if request.user in anime.favoritos.all():
+        anime.favoritos.remove(request.user)
+    else:
+        anime.favoritos.add(request.user)
+    return redirect("anime_detalle", anime_id=anime.id)
+
+
+@login_required
+def toggle_visto(request, anime_id):
+    """Marcar como visto o no visto"""
+    anime = get_object_or_404(Anime, id=anime_id)
+    if request.user in anime.vistos.all():
+        anime.vistos.remove(request.user)
+    else:
+        anime.vistos.add(request.user)
+    return redirect("anime_detalle", anime_id=anime.id)
