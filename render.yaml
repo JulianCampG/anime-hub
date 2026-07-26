@@ -1,0 +1,26 @@
+databases:
+  - name: animehub-db
+    databaseName: animehub
+    user: animehub
+    plan: free
+
+services:
+  - type: web
+    name: anime-hub
+    runtime: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn anime_hub.wsgi:application"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: animehub-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: PYTHON_VERSION
+        value: 3.12.11
+      - key: WEB_CONCURRENCY
+        value: 2

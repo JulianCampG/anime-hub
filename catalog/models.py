@@ -18,11 +18,16 @@ class Anime(models.Model):
         return self.titulo
 
 class Episodio(models.Model):
-    # Esto conecta cada episodio con su anime correspondiente
     anime = models.ForeignKey(Anime, on_delete=models.CASCADE, related_name='episodios')
     numero = models.IntegerField(help_text="Número del episodio (ej. 1)")
     titulo = models.CharField(max_length=200, help_text="Título del episodio")
     video_url = models.URLField(max_length=700, help_text="Enlace del video o Embed Code")
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['anime', 'numero'], name='unique_episodio_por_anime'),
+        ]
+        ordering = ['numero']
 
     def __str__(self):
         return f"{self.anime.titulo} - Episodio {self.numero}: {self.titulo}"

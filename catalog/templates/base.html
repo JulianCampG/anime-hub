@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AnimeHub{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                }
+            }
+        }
+    </script>
+    <style>
+        .auth-form form p { margin-bottom: 1.25rem; }
+        .auth-form form label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #c084fc;
+            margin-bottom: 0.375rem;
+        }
+        .auth-form form input[type="text"],
+        .auth-form form input[type="password"],
+        .auth-form form input[type="email"] {
+            width: 100%;
+            background-color: #111827;
+            color: #ffffff;
+            border: 1px solid #4c1d95;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            outline: none;
+            transition: all 0.2s ease-in-out;
+        }
+        .auth-form form input:focus {
+            border-color: #a855f7;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+        }
+        .auth-form .helptext {
+            display: block;
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-top: 0.375rem;
+            line-height: 1.2;
+        }
+        .auth-form .helptext ul {
+            list-style-type: disc;
+            margin-left: 1.25rem;
+            margin-top: 0.25rem;
+        }
+        .auth-form .errorlist {
+            color: #f87171;
+            font-size: 0.85rem;
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+            list-style: none;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="{% block body_class %}bg-gray-950 text-white min-h-screen flex flex-col font-sans{% endblock %}">
+
+    {% block navbar %}
+    <nav class="bg-gray-900/95 backdrop-blur-sm p-4 shadow-lg flex flex-wrap justify-between items-center gap-3 border-b border-purple-800 sticky top-0 z-50">
+        <a href="{% url 'home' %}" class="text-xl sm:text-2xl font-black text-pink-500 tracking-wider hover:text-pink-400 transition truncate">🔥 ANIME CG</a>
+
+        <div class="flex flex-wrap items-center justify-end gap-2 sm:gap-3 md:gap-4 w-full sm:w-auto">
+            {% if user.is_authenticated %}
+                <span class="text-sm font-semibold text-gray-400 hidden sm:inline">
+                    Hola, <span class="text-purple-400">{{ user.username }}</span>
+                </span>
+                <a href="{% url 'perfil' %}" class="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-2 px-3 sm:px-4 rounded-lg text-xs sm:text-sm transition shadow-lg shadow-purple-500/30">
+                    👤 Perfil
+                </a>
+                {% if user.is_staff %}
+                    <a href="/admin/" class="bg-gray-700 hover:bg-gray-600 text-xs text-white font-bold py-2 px-3 rounded-lg transition hidden md:inline">Admin</a>
+                {% endif %}
+                <form method="post" action="{% url 'logout' %}" class="inline-flex">
+                    {% csrf_token %}
+                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-3 sm:px-4 rounded-lg text-xs sm:text-sm transition">Salir</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-3 sm:px-4 rounded-lg text-xs sm:text-sm transition">Entrar</a>
+                <a href="{% url 'registro' %}" class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-3 sm:px-4 rounded-lg text-xs sm:text-sm transition">Crear Cuenta</a>
+            {% endif %}
+        </div>
+    </nav>
+    {% endblock %}
+
+    {% if messages %}
+    <div class="container mx-auto px-6 pt-4">
+        {% for message in messages %}
+        <div class="mb-2 px-4 py-3 rounded-lg text-sm font-semibold {% if message.tags == 'success' %}bg-green-900/50 border border-green-700 text-green-300{% else %}bg-purple-900/50 border border-purple-700 text-purple-200{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="{% block main_class %}flex-grow{% endblock %}">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block footer %}
+    <footer class="border-t border-gray-800 px-4 py-6 text-center text-gray-500 text-sm mt-auto">
+        <p>AnimeHub &copy; 2026 — Hecho con cariño de parte de Julian</p>
+    </footer>
+    {% endblock %}
+
+</body>
+</html>

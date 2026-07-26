@@ -1,23 +1,73 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viendo Ep. {{ episodio.numero }} - AnimeHub</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-black text-white min-h-screen flex flex-col">
-    <nav class="p-4 flex justify-between items-center bg-gradient-to-b from-gray-900 to-transparent">
-        <a href="{% url 'anime_detalle' episodio.anime.id %}" class="text-gray-300 hover:text-pink-400 font-bold transition flex items-center gap-2">
-            ← Volver a {{ episodio.anime.titulo }}
-        </a>
-        <h2 class="text-lg md:text-xl font-black text-purple-400 truncate">Ep. {{ episodio.numero }}: {{ episodio.titulo }}</h2>
-    </nav>
+{% extends 'base.html' %}
 
-    <div class="flex-grow flex items-center justify-center p-4">
-        <div class="w-full max-w-5xl aspect-video bg-gray-900 rounded-xl overflow-hidden shadow-2xl border border-gray-800 relative">
-            <iframe src="{{ episodio.video_url }}" class="w-full h-full absolute inset-0" frameborder="0" allowfullscreen allow="autoplay; fullscreen"></iframe>
-        </div>
+{% block title %}Viendo Ep. {{ episodio.numero }} - AnimeHub{% endblock %}
+
+{% block body_class %}bg-black text-white min-h-screen flex flex-col font-sans{% endblock %}
+
+{% block navbar %}
+<nav class="p-4 flex justify-between items-center bg-gradient-to-b from-gray-900 to-transparent sticky top-0 z-50">
+    <a href="{% url 'anime_detalle' episodio.anime.id %}" class="text-gray-300 hover:text-pink-400 font-bold transition flex items-center gap-2 text-sm md:text-base">
+        ← {{ episodio.anime.titulo }}
+    </a>
+    <h2 class="text-base md:text-xl font-black text-purple-400 truncate max-w-[50%] text-right">
+        Ep. {{ episodio.numero }}: {{ episodio.titulo }}
+    </h2>
+</nav>
+{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block content %}
+<div class="flex-grow flex flex-col items-center justify-center p-4 gap-6">
+    <div class="w-full max-w-5xl aspect-video bg-gray-900 rounded-xl overflow-hidden shadow-2xl border border-gray-800 relative">
+        <iframe src="{{ episodio.video_url }}" class="w-full h-full absolute inset-0" frameborder="0" allowfullscreen allow="autoplay; fullscreen"></iframe>
     </div>
-</body>
-</html>
+
+    <div class="w-full max-w-5xl flex items-center justify-between gap-4">
+        {% if prev_episodio %}
+            <a href="{% url 'ver_episodio' prev_episodio.id %}" class="flex items-center gap-2 bg-gray-900 hover:bg-purple-900/50 border border-gray-700 hover:border-purple-500 px-4 py-3 rounded-xl transition text-sm font-semibold flex-1 max-w-xs">
+                <span class="text-xl">⏮️</span>
+                <div class="min-w-0 text-left">
+                    <span class="text-xs text-gray-500 block">Anterior</span>
+                    <span class="truncate block">Ep. {{ prev_episodio.numero }}</span>
+                </div>
+            </a>
+        {% else %}
+            <div class="flex-1 max-w-xs"></div>
+        {% endif %}
+
+        <a href="{% url 'anime_detalle' episodio.anime.id %}" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 px-4 py-3 rounded-xl text-sm font-semibold transition whitespace-nowrap">
+            📋 Episodios
+        </a>
+
+        {% if next_episodio %}
+            <a href="{% url 'ver_episodio' next_episodio.id %}" class="flex items-center gap-2 bg-gray-900 hover:bg-purple-900/50 border border-gray-700 hover:border-purple-500 px-4 py-3 rounded-xl transition text-sm font-semibold flex-1 max-w-xs justify-end">
+                <div class="min-w-0 text-right">
+                    <span class="text-xs text-gray-500 block">Siguiente</span>
+                    <span class="truncate block">Ep. {{ next_episodio.numero }}</span>
+                </div>
+                <span class="text-xl">⏭️</span>
+            </a>
+        {% else %}
+            <div class="flex-1 max-w-xs"></div>
+        {% endif %}
+    </div>
+
+    {% if episodios %}
+    <div class="w-full max-w-5xl">
+        <details class="bg-gray-900/80 border border-gray-800 rounded-xl overflow-hidden">
+            <summary class="px-4 py-3 cursor-pointer text-sm font-semibold text-purple-400 hover:bg-gray-800 transition">
+                Ver todos los episodios ({{ episodios|length }})
+            </summary>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 p-4 border-t border-gray-800 max-h-48 overflow-y-auto">
+                {% for ep in episodios %}
+                    <a href="{% url 'ver_episodio' ep.id %}" class="px-3 py-2 rounded-lg text-sm text-center transition {% if ep.id == episodio.id %}bg-purple-600 text-white font-bold{% else %}bg-gray-800 text-gray-300 hover:bg-purple-900/50 hover:text-white{% endif %}">
+                        Ep. {{ ep.numero }}
+                    </a>
+                {% endfor %}
+            </div>
+        </details>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

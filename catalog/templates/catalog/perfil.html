@@ -1,75 +1,61 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimeHub - Mi Perfil</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-950 text-white min-h-screen">
-    <nav class="bg-gray-900 p-4 shadow-lg flex justify-between items-center border-b border-purple-800">
-        <a href="{% url 'home' %}" class="text-2xl font-black text-pink-500 tracking-wider hover:text-pink-400 transition">🔥 ANIME HUB</a>
-        <a href="{% url 'home' %}" class="text-sm text-gray-400 hover:text-white transition">← Volver al Catálogo</a>
-    </nav>
+{% extends 'base.html' %}
 
-    <div class="container mx-auto p-6 mt-2">
-        <div class="flex items-center gap-4 mb-10 bg-gray-900 p-6 rounded-2xl border border-gray-800 shadow-xl">
-            <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-2xl font-black shadow-lg">
-                {{ user.username|make_list|first|upper }}
-            </div>
-            <div>
-                <h2 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">
-                    Perfil de {{ user.username }}
-                </h2>
-                <p class="text-gray-400 text-sm">Tu coleccionador otaku personal</p>
-            </div>
+{% block title %}AnimeHub - Mi Perfil{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6 mt-2">
+    <div class="flex items-center gap-4 mb-10 bg-gray-900 p-6 rounded-2xl border border-gray-800 shadow-xl">
+        <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-2xl font-black shadow-lg">
+            {{ user.username|make_list|first|upper }}
         </div>
-
-        <h3 class="text-2xl font-bold mb-4 border-b-2 border-pink-500 pb-2 flex items-center gap-2">
-            ❤️ Mis Favoritos
-        </h3>
-        {% if favoritos %}
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-12">
-                {% for anime in favoritos %}
-                    <div class="bg-gray-900 rounded-xl overflow-hidden border border-gray-800 shadow-lg hover:border-pink-500 transition">
-                        {% if anime.imagen_url %}
-                            <img src="{{ anime.imagen_url }}" alt="{{ anime.titulo }}" class="w-full h-48 object-cover">
-                        {% else %}
-                            <div class="w-full h-48 bg-gray-800 flex items-center justify-center text-xs text-gray-500">Sin Imagen</div>
-                        {% endif %}
-                        <div class="p-3">
-                            <h4 class="font-bold text-pink-400 text-sm truncate">{{ anime.titulo }}</h4>
-                            <p class="text-xs text-gray-400 mt-0.5">⭐ {{ anime.calificacion }}</p>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p class="text-gray-500 mb-12 italic">Aún no tienes animes favoritos. ¡Ve al catálogo y agrega algunos!</p>
-        {% endif %}
-
-        <h3 class="text-2xl font-bold mb-4 border-b-2 border-purple-500 pb-2 flex items-center gap-2">
-            👁️ Historial de Vistos
-        </h3>
-        {% if vistos %}
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-10">
-                {% for anime in vistos %}
-                    <div class="bg-gray-900 rounded-xl overflow-hidden border border-gray-800 shadow-lg hover:border-purple-500 transition">
-                        {% if anime.imagen_url %}
-                            <img src="{{ anime.imagen_url }}" alt="{{ anime.titulo }}" class="w-full h-48 object-cover">
-                        {% else %}
-                            <div class="w-full h-48 bg-gray-800 flex items-center justify-center text-xs text-gray-500">Sin Imagen</div>
-                        {% endif %}
-                        <div class="p-3">
-                            <h4 class="font-bold text-purple-400 text-sm truncate">{{ anime.titulo }}</h4>
-                            <p class="text-xs text-gray-400 mt-0.5">Visto ✅</p>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p class="text-gray-500 italic">No has marcado ningún anime como visto todavía.</p>
-        {% endif %}
+        <div>
+            <h2 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">
+                Perfil de {{ user.username }}
+            </h2>
+            <p class="text-gray-400 text-sm">Tu coleccionador otaku personal</p>
+        </div>
     </div>
-</body>
-</html>
+
+    <h3 class="text-2xl font-bold mb-4 border-b-2 border-pink-500 pb-2">❤️ Mis Favoritos</h3>
+    {% if favoritos %}
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-12">
+            {% for anime in favoritos %}
+                <a href="{% url 'anime_detalle' anime.id %}" class="bg-gray-900 rounded-xl overflow-hidden border border-gray-800 shadow-lg hover:border-pink-500 hover:scale-105 transition duration-200 block group">
+                    {% if anime.imagen_url %}
+                        <img src="{{ anime.imagen_url }}" alt="{{ anime.titulo }}" loading="lazy" class="w-full h-48 object-cover group-hover:opacity-90 transition">
+                    {% else %}
+                        <div class="w-full h-48 bg-gray-800 flex items-center justify-center text-xs text-gray-500">Sin Imagen</div>
+                    {% endif %}
+                    <div class="p-3">
+                        <h4 class="font-bold text-pink-400 text-sm truncate">{{ anime.titulo }}</h4>
+                        <p class="text-xs text-gray-400 mt-0.5">⭐ {{ anime.calificacion }}</p>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-gray-500 mb-12 italic">Aún no tienes animes favoritos. ¡Ve al catálogo y agrega algunos!</p>
+    {% endif %}
+
+    <h3 class="text-2xl font-bold mb-4 border-b-2 border-purple-500 pb-2">👁️ Historial de Vistos</h3>
+    {% if vistos %}
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-10">
+            {% for anime in vistos %}
+                <a href="{% url 'anime_detalle' anime.id %}" class="bg-gray-900 rounded-xl overflow-hidden border border-gray-800 shadow-lg hover:border-purple-500 hover:scale-105 transition duration-200 block group">
+                    {% if anime.imagen_url %}
+                        <img src="{{ anime.imagen_url }}" alt="{{ anime.titulo }}" loading="lazy" class="w-full h-48 object-cover group-hover:opacity-90 transition">
+                    {% else %}
+                        <div class="w-full h-48 bg-gray-800 flex items-center justify-center text-xs text-gray-500">Sin Imagen</div>
+                    {% endif %}
+                    <div class="p-3">
+                        <h4 class="font-bold text-purple-400 text-sm truncate">{{ anime.titulo }}</h4>
+                        <p class="text-xs text-gray-400 mt-0.5">Visto ✅</p>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-gray-500 italic">No has marcado ningún anime como visto todavía.</p>
+    {% endif %}
+</div>
+{% endblock %}

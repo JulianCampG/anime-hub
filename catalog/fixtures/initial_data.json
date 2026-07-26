@@ -1,0 +1,72 @@
+[
+{
+  "model": "catalog.anime",
+  "pk": 1,
+  "fields": {
+    "titulo": "SOLO LEVELING",
+    "sinopsis": "En un mundo donde aparecieron puertas dimensionales que conectan la Tierra con una dimensiùn de monstruos, los humanos con poderes sobrenaturales conocidos como cazadores luchan por la supervivencia.  Sung Jinwoo, un cazador de rango E, es apodado \"el cazador mùs dùbil de la humanidad\" y trabaja en misiones peligrosas para pagar el tratamiento mùdico de su madre enferma.",
+    "fecha_estreno": "2026-07-27",
+    "genero": "ACCION",
+    "calificacion": 9.9,
+    "imagen_url": "https://imgs.search.brave.com/eMoVGiuL0-Kohi740tY1wzY7RfHSHgSDJza69gOfGiQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly80a3dh/bGxwYXBlcnMuY29t/L2ltYWdlcy93YWxs/cy90aHVtYnMvMjAy/NDEuanBn",
+    "trailer_url": "https://drive.google.com/file/d/1phMTIaUcgOE2OeHcOfsy7bcVBLvkOIh_/preview",
+    "favoritos": [],
+    "vistos": []
+  }
+},
+{
+  "model": "catalog.anime",
+  "pk": 2,
+  "fields": {
+    "titulo": "Kaijuu 8-gou",
+    "sinopsis": "Unos monstruos grotescos parecidos a Godzilla llamados \"kaijuu\" llevan muchos aùos apareciendo por Japùn. Para combatir a estas bestias, una unidad militar de ùlite conocida como Cuerpo de Defensa arriesga su vida a diario para proteger a los civiles. Una vez que se mata a una criatura, los \"barrenderos\" -que trabajan bajo las ùrdenes de la Corporaciùn Profesional de Limpieza de Kaijuu- se encargan de deshacerse de sus restos. Kafka Hibino, un hombre de 32 aùos, no estù satisfecho con su trabajo de barrendero. Desde muy joven ha aspirado a unirse al Cuerpo de Defensa y ganarse la vida matando kaijuus. Sin embargo, tras varios intentos fallidos, renunciù a sus sueùos y se resignù a la mediocridad que le proporcionaba un sueldo decente. Sin embargo, cuando un ambicioso recluta de 18 aùos llamado Leno Ichikawa se une a su equipo de limpieza, Kafka vuelve a recordar su deseo de alistarse en el ejùrcito. Tras una cadena de desafortunados acontecimientos y una interacciùn con el barrendero junior, Kafka se encuentra con un kaijuu de tipo parùsito que se abre paso a travùs de su boca, convirtiùndolo en un monstruo humanoide. Con sus nuevos poderes, Kafka se propone dar una ùltima oportunidad al sueùo de su vida.",
+    "fecha_estreno": "2026-07-26",
+    "genero": "Militar, Shounen, Sci-Fi, Accion",
+    "calificacion": 9.9,
+    "imagen_url": "https://wallpapercave.com/wp/wp9680149.jpg",
+    "trailer_url": "https://drive.google.com/file/d/1EuAB6-hVSSx_y05TWVcIsHxcXQAvmMQU/preview",
+    "favoritos": [],
+    "vistos": []
+  }
+},
+{
+  "model": "catalog.episodio",
+  "pk": 1,
+  "fields": {
+    "anime": 1,
+    "numero": 1,
+    "titulo": "Iùm Used to It",
+    "video_url": "https://drive.google.com/file/d/1qTI9W1w-DFMK_X9wtEyJpo1ItIgukt59/preview"
+  }
+},
+{
+  "model": "catalog.episodio",
+  "pk": 2,
+  "fields": {
+    "anime": 1,
+    "numero": 2,
+    "titulo": "If I Had One More Chance",
+    "video_url": "https://drive.google.com/file/d/1XEexLm0R-p8AgngUlayf_ce8eCnagA3s/preview"
+  }
+},
+{
+  "model": "catalog.episodio",
+  "pk": 3,
+  "fields": {
+    "anime": 1,
+    "numero": 3,
+    "titulo": "It's Like a Game",
+    "video_url": "https://drive.google.com/file/d/1WNtxvn3v2kTwKDCAldxK_RfbtnLprQnV/preview"
+  }
+},
+{
+  "model": "catalog.episodio",
+  "pk": 4,
+  "fields": {
+    "anime": 2,
+    "numero": 1,
+    "titulo": "El hombre que se convirtiù en kaiju",
+    "video_url": "https://drive.google.com/file/d/1CRgh3MrP6N0AtXIi_rbofOcA1KINQ6M7/preview"
+  }
+}
+]

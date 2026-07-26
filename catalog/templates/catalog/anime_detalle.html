@@ -1,59 +1,79 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ anime.titulo }} - AnimeHub</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-950 text-white min-h-screen">
-    <nav class="bg-gray-900 p-4 shadow-lg border-b border-purple-800 flex justify-between">
-        <a href="{% url 'home' %}" class="text-2xl font-black text-pink-500 hover:text-pink-400 tracking-wider">🔥 ANIME HUB</a>
-        <a href="{% url 'home' %}" class="text-gray-400 hover:text-white mt-1">← Volver al inicio</a>
-    </nav>
+{% extends 'base.html' %}
 
-    <div class="container mx-auto p-6 mt-6">
-        <div class="flex flex-col md:flex-row gap-8 bg-gray-900 p-8 rounded-2xl border border-gray-800 shadow-2xl">
-            <div class="w-full md:w-1/3 flex-shrink-0">
-                {% if anime.imagen_url %}
-                    <img src="{{ anime.imagen_url }}" class="w-full rounded-xl shadow-lg border-2 border-purple-900 object-cover">
-                {% else %}
-                    <div class="w-full h-80 bg-gray-800 rounded-xl flex items-center justify-center">Sin Portada</div>
-                {% endif %}
-            </div>
+{% block title %}{{ anime.titulo }} - AnimeHub{% endblock %}
 
-            <div class="w-full md:w-2/3">
-                <h1 class="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-400 mb-4">{{ anime.titulo }}</h1>
-                <p class="text-purple-300 font-bold mb-4">Género: {{ anime.genero }} | ⭐ {{ anime.calificacion }} | Estreno: {{ anime.fecha_estreno }}</p>
-                <p class="text-gray-300 leading-relaxed mb-8">{{ anime.sinopsis }}</p>
+{% block content %}
+<div class="container mx-auto p-4 sm:p-6 mt-2">
+    <a href="{% url 'home' %}" class="inline-flex items-center gap-2 text-gray-400 hover:text-white text-sm mb-6 transition">
+        ← Volver al catálogo
+    </a>
 
-                {% if anime.trailer_url %}
-                <h3 class="text-xl font-bold text-pink-400 mb-4">🎬 Tráiler Oficial</h3>
-                <div class="aspect-w-16 aspect-h-9 mb-8 rounded-xl overflow-hidden shadow-lg border border-gray-700 h-64 md:h-80 w-full relative">
-                    <iframe src="{{ anime.trailer_url }}" class="w-full h-full absolute inset-0" frameborder="0" allowfullscreen></iframe>
-                </div>
-                {% endif %}
-            </div>
+    <div class="flex flex-col md:flex-row gap-6 md:gap-8 bg-gray-900 p-5 sm:p-8 rounded-2xl border border-gray-800 shadow-2xl">
+        <div class="w-full md:w-1/3 flex-shrink-0">
+            {% if anime.imagen_url %}
+                <img src="{{ anime.imagen_url }}" alt="{{ anime.titulo }}" class="w-full rounded-xl shadow-lg border-2 border-purple-900 object-cover">
+            {% else %}
+                <div class="w-full h-80 bg-gray-800 rounded-xl flex items-center justify-center text-gray-500">Sin Portada</div>
+            {% endif %}
         </div>
 
-        <div class="mt-12">
-            <h2 class="text-3xl font-bold border-b-2 border-purple-500 pb-2 mb-6">Lista de Episodios</h2>
-            {% if episodios %}
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {% for ep in episodios %}
-                        <a href="{% url 'ver_episodio' ep.id %}" class="bg-gray-800 hover:bg-purple-900 border border-gray-700 hover:border-purple-500 p-4 rounded-xl flex items-center justify-between transition group shadow-md">
-                            <div>
-                                <span class="text-pink-500 font-bold text-sm">Episodio {{ ep.numero }}</span>
-                                <h4 class="font-semibold text-gray-200 truncate">{{ ep.titulo }}</h4>
-                            </div>
-                            <span class="text-2xl group-hover:scale-125 transition">▶️</span>
-                        </a>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p class="text-gray-500 italic bg-gray-900 p-6 rounded-xl border border-gray-800">Próximamente se agregarán episodios para este anime.</p>
+        <div class="w-full md:w-2/3">
+            <h1 class="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-400 mb-4">{{ anime.titulo }}</h1>
+
+            <div class="flex flex-wrap gap-2 mb-4">
+                <span class="bg-purple-900/60 text-purple-300 px-3 py-1 rounded-full text-sm font-semibold">{{ anime.genero }}</span>
+                <span class="bg-yellow-900/40 text-yellow-300 px-3 py-1 rounded-full text-sm font-semibold">⭐ {{ anime.calificacion }}</span>
+                <span class="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm">{{ anime.fecha_estreno }}</span>
+                <span class="bg-pink-900/40 text-pink-300 px-3 py-1 rounded-full text-sm">{{ episodios|length }} episodio{{ episodios|length|pluralize:"s" }}</span>
+            </div>
+
+            <p class="text-gray-300 leading-relaxed mb-6">{{ anime.sinopsis }}</p>
+
+            {% if user.is_authenticated %}
+            <div class="flex flex-wrap gap-3 mb-8">
+                <form method="post" action="{% url 'toggle_favorito' anime.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                    <button type="submit" class="px-5 py-2 rounded-lg text-sm font-bold transition border {% if anime.id in favorito_ids %}bg-pink-600 border-pink-500 text-white{% else %}bg-transparent border-gray-700 text-gray-400 hover:border-pink-500 hover:text-pink-400{% endif %}">
+                        {% if anime.id in favorito_ids %}❤️ En favoritos{% else %}🤍 Agregar a favoritos{% endif %}
+                    </button>
+                </form>
+                <form method="post" action="{% url 'toggle_visto' anime.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                    <button type="submit" class="px-5 py-2 rounded-lg text-sm font-bold transition border {% if anime.id in visto_ids %}bg-purple-600 border-purple-500 text-white{% else %}bg-transparent border-gray-700 text-gray-400 hover:border-purple-500 hover:text-purple-400{% endif %}">
+                        {% if anime.id in visto_ids %}👁️ Marcado como visto{% else %}👀 Marcar como visto{% endif %}
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+
+            {% if anime.trailer_url %}
+            <h3 class="text-xl font-bold text-pink-400 mb-4">🎬 Tráiler Oficial</h3>
+            <div class="aspect-video mb-4 rounded-xl overflow-hidden shadow-lg border border-gray-700 w-full">
+                <iframe src="{{ anime.trailer_url }}" class="w-full h-full" frameborder="0" allowfullscreen></iframe>
+            </div>
             {% endif %}
         </div>
     </div>
-</body>
-</html>
+
+    <div class="mt-12">
+        <h2 class="text-3xl font-bold border-b-2 border-purple-500 pb-2 mb-6">Lista de Episodios</h2>
+        {% if episodios %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for ep in episodios %}
+                    <a href="{% url 'ver_episodio' ep.id %}" class="bg-gray-800 hover:bg-purple-900/50 border border-gray-700 hover:border-purple-500 p-4 rounded-xl flex items-center justify-between transition group shadow-md">
+                        <div class="min-w-0">
+                            <span class="text-pink-500 font-bold text-sm">Episodio {{ ep.numero }}</span>
+                            <h4 class="font-semibold text-gray-200 truncate">{{ ep.titulo }}</h4>
+                        </div>
+                        <span class="text-2xl group-hover:scale-125 transition flex-shrink-0 ml-3">▶️</span>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-500 italic bg-gray-900 p-6 rounded-xl border border-gray-800">Próximamente se agregarán episodios para este anime.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
