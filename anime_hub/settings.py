@@ -132,6 +132,6 @@ LOGOUT_REDIRECT_URL = 'home'
 # ==========================================
 # CONFIGURACIÓN DE ACCESO PRIVADO Y LOGIN
 # ==========================================
-LOGIN_URL = '/accounts/login/'
+LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'
