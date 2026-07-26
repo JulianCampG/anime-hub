@@ -20,14 +20,18 @@
 {% block content %}
 <div class="flex-grow flex flex-col items-center justify-center p-3 sm:p-4 gap-4 sm:gap-6">
     <div class="w-full max-w-5xl rounded-xl overflow-hidden shadow-2xl border border-gray-800 bg-black">
-        <div class="relative w-full aspect-video">
+        <div id="player-shell" class="relative w-full aspect-video bg-black">
+            <div id="player-overlay" class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-black/80 px-4 text-center">
+                <p class="text-sm sm:text-base font-semibold text-gray-200">Abriendo el reproductor en pantalla completa para una mejor visualización.</p>
+            </div>
             <iframe
-                src="{{ episodio.video_url }}"
+                id="episode-player"
+                data-src="{{ episodio.video_url }}"
                 class="absolute inset-0 w-full h-full"
                 frameborder="0"
-                allow="autoplay; fullscreen; picture-in-picture"
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
                 allowfullscreen
-                loading="lazy"
+                loading="eager"
                 title="Reproductor de episodio"
                 referrerpolicy="strict-origin-when-cross-origin"
             ></iframe>
@@ -85,4 +89,49 @@
     </div>
     {% endif %}
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const shell = document.getElementById('player-shell');
+        const iframe = document.getElementById('episode-player');
+        const overlay = document.getElementById('player-overlay');
+
+        if (!shell || !iframe || !overlay) return;
+
+        function normalizeDriveUrl(url) {
+            if (!url) return '';
+            const match = url.match(/\/file\/d\/([^/]+)/i);
+            if (match) {
+                return `https://drive.google.com/file/d/${match[1]}/preview`;
+            }
+            return url;
+        }
+
+        function buildEmbedUrl(url) {
+            const normalized = normalizeDriveUrl(url);
+            const separator = normalized.includes('?') ? '&' : '?';
+            return `${normalized}${separator}autoplay=1&fs=1&rel=0&showinfo=0&controls=1&playsinline=1`;
+        }
+
+        iframe.setAttribute('src', buildEmbedUrl(iframe.getAttribute('data-src') || ''));
+
+        function enterFullscreen() {
+            overlay.classList.add('hidden');
+
+            if (shell.requestFullscreen) {
+                shell.requestFullscreen().catch(function () {});
+            } else if (shell.webkitRequestFullscreen) {
+                shell.webkitRequestFullscreen();
+            }
+        }
+
+        setTimeout(enterFullscreen, 500);
+
+        document.addEventListener('fullscreenchange', function () {
+            if (!document.fullscreenElement) {
+                overlay.classList.remove('hidden');
+            }
+        });
+    });
+</script>
 {% endblock %}
