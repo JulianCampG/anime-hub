@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viendo Ep. {{ episodio.numero }} - AnimeHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white min-h-screen flex flex-col">
+    <nav class="p-4 flex justify-between items-center bg-gradient-to-b from-gray-900 to-transparent">
+        <a href="{% url 'anime_detalle' episodio.anime.id %}" class="text-gray-300 hover:text-pink-400 font-bold transition flex items-center gap-2">
+            ← Volver a {{ episodio.anime.titulo }}
+        </a>
+        <h2 class="text-lg md:text-xl font-black text-purple-400 truncate">Ep. {{ episodio.numero }}: {{ episodio.titulo }}</h2>
+    </nav>
+
+    <div class="flex-grow flex items-center justify-center p-4">
+        <div class="w-full max-w-5xl aspect-video bg-gray-900 rounded-xl overflow-hidden shadow-2xl border border-gray-800 relative">
+            <iframe src="{{ episodio.video_url }}" class="w-full h-full absolute inset-0" frameborder="0" allowfullscreen allow="autoplay; fullscreen"></iframe>
+        </div>
+    </div>
+</body>
+</html>
